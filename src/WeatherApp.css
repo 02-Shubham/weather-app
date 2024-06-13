@@ -1,0 +1,10 @@
+.Date{
+    position: absolute;
+    right: 30px;
+    top: 10px;
+}
+.content{
+    border: 2px solid black;
+    border-radius: 25px;
+    padding: 10px
+}
