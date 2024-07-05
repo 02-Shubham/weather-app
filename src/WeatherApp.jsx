@@ -9,7 +9,7 @@ export default function WeatherApp(){
     const year = today.getFullYear();
     const date = today. getDate();
     const currentDate = date + "/" + month + "/" + year;
-    const showTime = date.getHours() + ':' + date.getMinutes() + ":" + date.getSeconds(); 
+    const showTime = today.getHours() + ':' + today.getMinutes() + ":" + today.getSeconds(); 
 
     let [weatherInfo,setWeatherInfo]=useState({
         city: "Mumbai",
@@ -24,9 +24,7 @@ export default function WeatherApp(){
         setWeatherInfo(newInfo);
     }
     return(<div className="content">
-        <h2>Weather App by Shubham</h2>
         <h4 className="Date">{currentDate}</h4>
-        {/* <h4 >{showTime}</h4> */}
         <SearchBox updateInfo={updateInfo} className="SearchBox"/>
         <InfoBox info={weatherInfo}/>
         </div>
