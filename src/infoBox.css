@@ -4,3 +4,18 @@
 .Heading{
     color: rgb(97, 86, 249);
 }
+.InfoBox {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px;
+  }
+  
+  .Heading {
+    margin-bottom: 20px;
+  }
+  
+  .Card {
+    width: 100%;
+    max-width: 345px;
+  }

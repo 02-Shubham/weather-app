@@ -4,7 +4,28 @@
     top: 10px;
 }
 .content{
-    border: 2px solid black;
     border-radius: 25px;
     padding: 10px
 }
+.content {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    
+  }
+  
+  .Date {
+    margin-bottom: 20px;
+    font-weight: bold;
+  }
+  
+  .SearchBox {
+    margin-bottom: 20px;
+  }
+  
+  .InfoBox {
+    width: 100%;
+  }
+  

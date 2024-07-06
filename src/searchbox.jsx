@@ -1,10 +1,11 @@
+/* eslint-disable react/prop-types */
 // import Button from '@mui/material/Button';
 // import TextField from '@mui/material/TextField';
-// import { red } from '@mui/material/colors';
+// // import { red } from '@mui/material/colors';
 // import { useState } from 'react';
 
-// export default function SearchBox({updateInfo}){
-//     let [city,setCity]=useState("");
+// export default function SearchBox(updateInfo){
+//     let [city,setCity]=useState(" ");
 //     let [error,setError]=useState(false);
 //     const API_URL="https://api.openweathermap.org/data/2.5/weather";
 //     const API_KEY="948e0254af0750a8f8dc87c98313f1dc";
@@ -63,15 +64,17 @@
 //     </form>
 //     </div>
 //     )
-// };
-// 2nd code with no suggestion  
+// }
+
+import  { useState } from 'react';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
-import { useState } from 'react';
+import { Container, Typography, Box, Paper } from '@mui/material';
 
-export default function SearchBox({ updateInfo }) {
+export default function SearchBox({updateInfo}) {
   const [city, setCity] = useState("");
   const [error, setError] = useState("");
+
   const API_URL = "https://api.openweathermap.org/data/2.5/weather";
   const API_KEY = "948e0254af0750a8f8dc87c98313f1dc";
 
@@ -79,9 +82,16 @@ export default function SearchBox({ updateInfo }) {
     try {
       const response = await fetch(`${API_URL}?q=${city}&appid=${API_KEY}&units=metric`);
       if (!response.ok) {
+        console.error(`Error: ${response.status} ${response.statusText}`);
         throw new Error("City not found");
       }
+
       const jsonResponse = await response.json();
+      if (!jsonResponse.main || !jsonResponse.weather || !jsonResponse.weather[0]) {
+        console.error('Invalid response structure:', jsonResponse);
+        throw new Error('Unexpected response structure');
+      }
+
       const result = {
         city: city,
         temp: jsonResponse.main.temp,
@@ -91,15 +101,17 @@ export default function SearchBox({ updateInfo }) {
         feelsLike: jsonResponse.main.feels_like,
         weather: jsonResponse.weather[0].description,
       };
+
       return result;
     } catch (err) {
+      console.error('Error fetching weather data:', err);
       throw err;
     }
   };
 
   const handleChange = (evt) => {
     setCity(evt.target.value);
-    setError(""); // Reset error when user starts typing
+    setError(""); // Reset error on input change
   };
 
   const handleSubmit = async (evt) => {
@@ -114,105 +126,33 @@ export default function SearchBox({ updateInfo }) {
   };
 
   return (
-    <div className='SearchBox'>
-      <h3>Search for the Weather</h3>
-      <form onSubmit={handleSubmit}>
-        <TextField
-          id="city"
-          label="City Name"
-          variant="outlined"
-          onChange={handleChange}
-          value={city}
-          required
-        />
-        <br />
-        <br />
-        <Button variant="contained" type="submit">Search</Button>
-        {error && <h3 style={{ color: "red" }}>{error}</h3>}
-      </form>
-    </div>
+    <Container maxWidth="sm" sx={{ mt: 4 }}>
+      <Paper elevation={3} sx={{ p: 4 }}>
+        <Typography variant="h5" align="center" gutterBottom>
+          Search for the Weather
+        </Typography>
+        <form onSubmit={handleSubmit}>
+          <TextField
+            id="city"
+            label="City Name"
+            variant="outlined"
+            onChange={handleChange}
+            value={city}
+            required
+            fullWidth
+          />
+          <Box mt={2}>
+            <Button variant="contained" type="submit" fullWidth>
+              Search
+            </Button>
+          </Box>
+          {error && (
+            <Typography color="error" align="center" mt={2}>
+              {error}
+            </Typography>
+          )}
+        </form>
+      </Paper>
+    </Container>
   );
-};
-// 3rd code with suggestion
-// import React, { useState, useRef, useCallback } from 'react';
-// import { LoadScript, StandaloneSearchBox } from '@react-google-maps/api';
-// import Button from '@mui/material/Button';
-// import TextField from '@mui/material/TextField';
-
-// const libraries = ["places"];
-// const googleMapsApiKey = "YOUR_GOOGLE_MAPS_API_KEY";
-
-// export default function SearchBox({ updateInfo }) {
-//   const [city, setCity] = useState("");
-//   const [error, setError] = useState("");
-//   const searchBoxRef = useRef(null);
-//   const API_URL = "https://api.openweathermap.org/data/2.5/weather";
-//   const API_KEY = "948e0254af0750a8f8dc87c98313f1dc";
-
-//   const getWeatherInfo = async () => {
-//     try {
-//       const response = await fetch(`${API_URL}?q=${city}&appid=${API_KEY}&units=metric`);
-//       if (!response.ok) {
-//         throw new Error("City not found");
-//       }
-//       const jsonResponse = await response.json();
-//       const result = {
-//         city: city,
-//         temp: jsonResponse.main.temp,
-//         tempMin: jsonResponse.main.temp_min,
-//         tempMax: jsonResponse.main.temp_max,
-//         humidity: jsonResponse.main.humidity,
-//         feelsLike: jsonResponse.main.feels_like,
-//         weather: jsonResponse.weather[0].description,
-//       };
-//       return result;
-//     } catch (err) {
-//       throw err;
-//     }
-//   };
-
-//   const handlePlacesChanged = useCallback(() => {
-//     const places = searchBoxRef.current.getPlaces();
-//     if (places && places.length > 0) {
-//       setCity(places[0].formatted_address);
-//       setError(""); // Reset error when a valid place is selected
-//     }
-//   }, []);
-
-//   const handleSubmit = async (evt) => {
-//     evt.preventDefault();
-//     try {
-//       const newInfo = await getWeatherInfo();
-//       updateInfo(newInfo);
-//       setCity(""); // Clear input field on success
-//     } catch (err) {
-//       setError("No such place exists!"); // Display error message
-//     }
-//   };
-
-//   return (
-//     <div className='SearchBox'>
-//       <h3>Search for the Weather</h3>
-//       <LoadScript googleMapsApiKey={googleMapsApiKey} libraries={libraries}>
-//         <StandaloneSearchBox
-//           onLoad={(ref) => (searchBoxRef.current = ref)}
-//           onPlacesChanged={handlePlacesChanged}
-//         >
-//           <TextField
-//             id="city"
-//             label="City Name"
-//             variant="outlined"
-//             value={city}
-//             required
-//             fullWidth
-//             onChange={(e) => setCity(e.target.value)}
-//           />
-//         </StandaloneSearchBox>
-//       </LoadScript>
-//       <br />
-//       <br />
-//       <Button variant="contained" type="submit" onClick={handleSubmit}>Search</Button>
-//       {error && <h3 style={{ color: "red" }}>{error}</h3>}
-//     </div>
-//   );
-// }
+}
